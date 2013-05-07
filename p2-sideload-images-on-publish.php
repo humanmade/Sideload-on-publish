@@ -23,7 +23,7 @@ class P2_Sideload_Images {
 	
 	function __construct() {
 
-		add_action( 'save_post', array( $this, 'check_content' ) );
+		add_action( 'save_post', array( $this, 'check_post_content' ) );
 
 	}
 
@@ -33,16 +33,25 @@ class P2_Sideload_Images {
 	 * @param int $post_id
 	 * @return null
 	 */
-	private function check_content ( $post_id ) {
-
+	private function check_post_content ( $post_id ) {
+		
 		$post = get_post( $post_id );		
 
-		$dom = new DOMDocument();
+		if ( $new_content = $this->check_content( $post->post_content ) )
+			wp_update_post( array(
+				'ID'      => $post_id,
+				'post_content' => $new_content
+			) );
 
+	}
+
+	private function check_content ( $content ) {
+
+		$dom = new DOMDocument();
 		// loadXml needs properly formatted documents, so it's better to use loadHtml, but it needs a hack to properly handle UTF-8 encoding
 		@$dom->loadHTML( sprintf( 
 			'<html><head><meta http-equiv="Content-Type" content="text/html; charset="UTF-8" /></head><body>%s</body></html>',
-			wpautop( $post->post_content )
+			wpautop( $content )
 		) );
 
 		$update_post = false;
@@ -73,7 +82,7 @@ class P2_Sideload_Images {
 		}
 
 		if ( ! $update_post )
-			return;
+			return false;
 
 		$new_content = '';
 
@@ -84,11 +93,8 @@ class P2_Sideload_Images {
         	$tmp_dom->appendChild($tmp_dom->importNode($child, true)); 
         	$new_content .= trim( $tmp_dom->saveHTML() ); 
     	} 
-	
-		wp_update_post( array(
-			'ID'      => $post_id,
-			'post_content' => $new_content
-		) );
+		
+		return $new_content;
 
 	}
 
