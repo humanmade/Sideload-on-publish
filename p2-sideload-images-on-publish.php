@@ -8,11 +8,11 @@
  * Version: 0.1
  */
 
-add_action( 'init', function() {
+// add_action( 'init', function() {
 
 	$sideload_iamges = new P2_Sideload_Images();
 
-} );
+// } );
 
 class P2_Sideload_Images {
 
@@ -23,21 +23,25 @@ class P2_Sideload_Images {
 	
 	function __construct() {
 
-		add_action( 'save_post', array( $this, 'check_post_content' ) );
+		add_action( 'save_post', array( $this, 'check_post_content' ), 100 );
+		// add_filter( 'comment_save_pre', array( $this, 'check_comment_content' ), 100 );
 
 	}
 
 	/**
-	 * Check post content, and sideload external images from whitelisted domains.
+	 * Check post content, If new content, update
 	 * 
 	 * @param int $post_id
 	 * @return null
 	 */
-	private function check_post_content ( $post_id ) {
+	public function check_post_content ( $post_id ) {
 		
 		$post = get_post( $post_id );		
 
-		if ( $new_content = $this->check_content( $post->post_content ) )
+		$new_content = $this->check_content_for_img_markdown( $post->post_content );
+		// $new_content = $this->check_content_for_img_html( $post->post_content );
+		
+		if ( $new_content !== $post->post_content )
 			wp_update_post( array(
 				'ID'      => $post_id,
 				'post_content' => $new_content
@@ -45,7 +49,55 @@ class P2_Sideload_Images {
 
 	}
 
-	private function check_content ( $content ) {
+	/**
+	 * Check comment content.
+	 * 
+	 * @param int $post_id
+	 * @return null
+	 */
+	public function check_comment_content ( $content ) {
+		
+		if ( $new_content = $this->check_content( $content ) )
+			return $new_content;
+
+		return $content;	
+
+	}
+
+	/**
+	 * Check content and sideload external img elements with srcs from whitelisted domains.
+	 *
+	 * @param  string $content Old Content
+	 * @return string $content New Content
+	 */
+	public function check_content_for_img_markdown ( $content, $post_id = null ) {	
+
+		preg_match( '/!\[.*\]\((.*)\)/', $content, $matches );
+
+		unset( $matches[0] );
+		
+		foreach ( (array) $matches as $src ) {
+
+			$new_attachment = $this->sideload_image( $src, $post_id );
+
+			if ( ! $new_src = wp_get_attachment_image_src( $new_attachment, 'full' ) )
+				continue;
+
+			$content = str_replace( $src, $new_src[0], $content );
+
+		}
+
+		return $content;
+
+	}
+
+	/**
+	 * Check content and sideload external img elements with srcs from whitelisted domains.
+	 *
+	 * @param  string $content Old Content
+	 * @return string $content New Content
+	 */
+	public function check_content_for_img_html ( $content, $post_id = null ) {
 
 		$dom = new DOMDocument();
 		// loadXml needs properly formatted documents, so it's better to use loadHtml, but it needs a hack to properly handle UTF-8 encoding
@@ -82,7 +134,7 @@ class P2_Sideload_Images {
 		}
 
 		if ( ! $update_post )
-			return false;
+			return $content;
 
 		$new_content = '';
 
@@ -104,7 +156,7 @@ class P2_Sideload_Images {
 	 * @param  string $src
 	 * @return bool
 	 */
-	private function check_domain_whitelist( $src ) {
+	public function check_domain_whitelist( $src ) {
 
 		foreach ( (array) $this->domain_whitelist as  $domain )
 			if ( false !== strpos( $src, $domain ) )
@@ -123,15 +175,16 @@ class P2_Sideload_Images {
 	 * @param  string $desc Description of the sideloaded file.
 	 * @return int Attachment ID
 	 */
-	private function sideload_image ( $src, $post_id, $desc = null ) {
+	public function sideload_image ( $src, $post_id = null, $desc = null ) {
 
-		if ( ! empty($src) ) {
+		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+    	require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+	    require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+
+		if ( ! empty( $src ) ) {
 			
 			// Fix issues with double encoding
 			$src = urldecode( $src );
-
-			// Download file to temp location
-			$tmp = download_url( $src );
 
 			// Set variables for storage
 			// fix src filename for query strings
@@ -140,9 +193,13 @@ class P2_Sideload_Images {
 			if ( empty( $matches ) )
 				return false;
 
+			// Download file to temp location
+			$tmp = download_url( $src );
+
+			$file_array = array();
 			$file_array['name'] = basename($matches[0]);
 			$file_array['tmp_name'] = $tmp;
-
+			
 			// If error storing temporarily, unlink
 			if ( is_wp_error( $tmp ) ) {
 				@unlink($file_array['tmp_name']);
@@ -152,6 +209,7 @@ class P2_Sideload_Images {
 
 			// do the validation and storage stuff
 			$id = media_handle_sideload( $file_array, $post_id, $desc );
+
 			// If error storing permanently, unlink
 			if ( is_wp_error($id) ) {
 				@unlink($file_array['tmp_name']);
