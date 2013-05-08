@@ -40,7 +40,7 @@ class P2_Sideload_Images {
 		
 		$post = get_post( $post_id, 'ARRAY_A' );		
 
-		if ( ! $comment )
+		if ( ! $post )
 			return;
 
 		$new_content = $post['post_content'];
