@@ -24,7 +24,9 @@ class P2_Sideload_Images {
 	function __construct() {
 
 		add_action( 'save_post', array( $this, 'check_post_content' ), 100 );
-		// add_filter( 'comment_save_pre', array( $this, 'check_comment_content' ), 100 );
+
+		add_filter( 'wp_insert_comment', array( $this, 'check_comment_content' ), 100 );
+		add_filter( 'edit_comment', array( $this, 'check_comment_content' ), 100 );
 
 	}
 
@@ -57,12 +59,21 @@ class P2_Sideload_Images {
 	 * @param int $post_id
 	 * @return null
 	 */
-	public function check_comment_content ( $content ) {
-		
-		if ( $new_content = $this->check_content( $content ) )
-			return $new_content;
+	public function check_comment_content ( $comment_id ) {
+			
+		$comment = get_comment( $comment_id, 'ARRAY_A' );
 
-		return $content;	
+		if ( ! $comment )
+			return;
+
+		$new_content = $comment['comment_content'];
+		$new_content = $this->check_content_for_img_markdown( $new_content, $comment->comment_post_ID );
+		$new_content = $this->check_content_for_img_html( $new_content, $comment->comment_post_ID );
+	
+		if ( $new_content !== $comment['comment_content'] ) {
+			$comment['comment_content'] = $new_content;
+			wp_update_comment( $comment );
+		}
 
 	}
 
