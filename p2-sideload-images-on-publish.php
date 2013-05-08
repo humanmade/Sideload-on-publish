@@ -38,9 +38,11 @@ class P2_Sideload_Images {
 		
 		$post = get_post( $post_id );		
 
-		$new_content = $this->check_content_for_img_markdown( $post->post_content );
-		// $new_content = $this->check_content_for_img_html( $post->post_content );
-		
+		$new_content = $post->post_content;
+
+		$new_content = $this->check_content_for_img_markdown( $new_content );
+		$new_content = $this->check_content_for_img_html( $new_content );
+
 		if ( $new_content !== $post->post_content )
 			wp_update_post( array(
 				'ID'      => $post_id,
@@ -80,6 +82,9 @@ class P2_Sideload_Images {
 
 			$new_attachment = $this->sideload_image( $src, $post_id );
 
+			if ( 0 === strpos( $src, home_url() ) || ! $this->check_domain_whitelist( $src ) )
+				continue;
+
 			if ( ! $new_src = wp_get_attachment_image_src( $new_attachment, 'full' ) )
 				continue;
 
@@ -111,8 +116,8 @@ class P2_Sideload_Images {
 		foreach ( $dom->getElementsByTagName( 'img' ) as $image ) {
 
 			$src = $image->getAttribute( 'src' );
-
-			if ( ! $this->check_domain_whitelist( $src ) )
+			
+			if ( 0 === strpos( $src, home_url() ) || ! $this->check_domain_whitelist( $src ) )
 				continue;
 
 			$new_attachment = $this->sideload_image( $src, $post_id );
