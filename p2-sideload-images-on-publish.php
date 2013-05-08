@@ -38,18 +38,20 @@ class P2_Sideload_Images {
 	 */
 	public function check_post_content ( $post_id ) {
 		
-		$post = get_post( $post_id );		
+		$post = get_post( $post_id, 'ARRAY_A' );		
 
-		$new_content = $post->post_content;
+		if ( ! $comment )
+			return;
 
-		$new_content = $this->check_content_for_img_markdown( $new_content );
-		$new_content = $this->check_content_for_img_html( $new_content );
+		$new_content = $post['post_content'];
 
-		if ( $new_content !== $post->post_content )
-			wp_update_post( array(
-				'ID'      => $post_id,
-				'post_content' => $new_content
-			) );
+		$new_content = $this->check_content_for_img_markdown( $new_content, $post_id );
+		$new_content = $this->check_content_for_img_html( $new_content, $post_id );
+
+		if ( $new_content !== $post['post_content'] ) {
+			$post['post_content'] = $new_content;
+			wp_update_post( $post );
+		}
 
 	}
 
