@@ -8,11 +8,7 @@
  * Version: 0.1
  */
 
-// add_action( 'init', function() {
-
-	$sideload_iamges = new P2_Sideload_Images();
-
-// } );
+$sideload_iamges = new P2_Sideload_Images();
 
 class P2_Sideload_Images {
 
