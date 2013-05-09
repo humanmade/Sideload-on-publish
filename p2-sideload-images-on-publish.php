@@ -12,12 +12,12 @@ $sideload_iamges = new P2_Sideload_Images();
 
 class P2_Sideload_Images {
 
-	public $domain_whitelist = array(
-		'dropbox.com',
-		'dl.dropboxusercontent.com'
-	);
+	public $domain_whitelist = array();
 	
 	function __construct() {
+
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ));
 
 		add_action( 'save_post', array( $this, 'check_post_content' ), 100 );
 
@@ -185,8 +185,11 @@ class P2_Sideload_Images {
 	 */
 	public function check_domain_whitelist( $src ) {
 
+		$options = get_option( 'p2_sideload_images_settings', array() );
+		$this->domain_whitelist = $options['whitelist'];
+
 		foreach ( (array) $this->domain_whitelist as  $domain )
-			if ( false !== strpos( $src, $domain ) )
+			if ( 0 === strpos( $src, $domain ) )
 				return true;
 
 		return false;
@@ -250,6 +253,104 @@ class P2_Sideload_Images {
 		return false;
 	
 	}
-	
-}
 
+	/**
+	 * Register settings and all settings fields etc.
+	 */
+	function register_settings() {
+		
+		register_setting( 'p2_sideload_images_settings', 'p2_sideload_images_settings', array( $this, 'validate_settings' ) );
+		add_settings_section( 'plugin_main', 'General Options', '__return_true', 'p2_sideload_images_settings' );
+		add_settings_field( 'p2_sideload_images_whitelist', 'Domain Whitelist', array( $this, 'settings_field_whitelist' ), 'p2_sideload_images_settings', 'plugin_main' );
+
+	}
+
+	/**
+	 * Add link to settings page to options menu.
+	 *
+	 * @return null
+	 */
+	function admin_menu() {
+
+		add_options_page( 'P2 Sideload images on publish', 'P2 Sideload images on publish', 'administrator', __FILE__, array( $this, 'admin_page_content' ) );
+
+		$options = get_option( 'p2_sideload_images_settings', array() );
+		$this->domain_whitelist = $options['whitelist'];
+	
+	}
+
+	/**
+	 * Validate settings on save.
+	 * @param  array $input
+	 * @return array $input
+	 */
+	function validate_settings( $input ) {
+
+		if ( isset( $input['whitelist'] ) ) {
+
+			$input['whitelist'] = str_replace( array( "\n", "\r" ), ',', $input['whitelist'] );
+
+			$input['whitelist'] = explode(',', $input['whitelist']  );
+
+			foreach ( $input['whitelist'] as &$item )
+				$item = trim( $item );
+
+			$input['whitelist'] = array_filter( $input['whitelist'] );
+
+		}
+
+		return $input;
+
+	}
+
+	/**
+	 * Output admin page content.
+	 * 
+	 * @return null
+	 */
+	function admin_page_content() {
+
+		?>
+
+		<div class="wrap">
+
+			<h2>P2 Sideload Images on Publish Settings</h2>
+
+			<form action="options.php" method="post">
+
+				<?php
+
+				settings_fields('p2_sideload_images_settings');
+				do_settings_sections('p2_sideload_images_settings');
+
+				?>
+
+				<p class="submit">
+					<input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+				</p>
+
+			</form>
+
+		</div>
+
+		<?php
+
+	}
+
+	/**
+	 * Output whitelist textarea
+	 * 
+	 * @return null
+	 */
+	function settings_field_whitelist() {
+		
+		$value = implode( "\n", (array) $this->domain_whitelist ); 
+
+		?>
+	
+		<textarea name="p2_sideload_images_settings[whitelist]" rows="10" cols="50" class="large-text code"><?php echo esc_html( $value ); ?></textarea>
+		
+		<?php
+	}
+
+}
