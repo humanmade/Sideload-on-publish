@@ -34,19 +34,21 @@ class P2_Sideload_Images {
 	 */
 	public function check_post_content ( $post_id ) {
 		
-		$post = get_post( $post_id, 'ARRAY_A' );		
+		global $wpdb;
+		
+		$post = get_post( $post_id );		
 
 		if ( ! $post )
 			return;
 
-		$new_content = $post['post_content'];
+		$new_content = $post->post_content;
 
 		$new_content = $this->check_content_for_img_markdown( $new_content, $post_id );
 		$new_content = $this->check_content_for_img_html( $new_content, $post_id );
 
-		if ( $new_content !== $post['post_content'] ) {
-			$post['post_content'] = $new_content;
-			wp_update_post( $post );
+		if ( $new_content !== $post->post_content ) {
+			$wpdb->update( $wpdb->posts, array( 'post_content' => $new_content ), array( 'ID' => $post->ID ) );
+			clean_post_cache( $post->ID );
 		}
 
 	}
@@ -58,19 +60,21 @@ class P2_Sideload_Images {
 	 * @return null
 	 */
 	public function check_comment_content ( $comment_id ) {
-			
-		$comment = get_comment( $comment_id, 'ARRAY_A' );
+		
+		global $wpdb;
+		
+		$comment = get_comment( $comment_id );
 
 		if ( ! $comment )
 			return;
 
-		$new_content = $comment['comment_content'];
+		$new_content = $comment->comment_content;
 		$new_content = $this->check_content_for_img_markdown( $new_content, $comment->comment_post_ID );
 		$new_content = $this->check_content_for_img_html( $new_content, $comment->comment_post_ID );
 	
-		if ( $new_content !== $comment['comment_content'] ) {
-			$comment['comment_content'] = $new_content;
-			wp_update_comment( $comment );
+		if ( $new_content !== $comment->comment_content ) {
+			$wpdb->update( $wpdb->comments, array( 'comment_content' => $new_content ), array( 'ID' => $comment->comment_ID ) );
+			clean_comment_cache( $comment->ID );
 		}
 
 	}
