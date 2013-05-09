@@ -135,16 +135,25 @@ class P2_Sideload_Images {
 
 			$new_attachment = $this->sideload_image( $src, $post_id );
 
-			if ( $width = $image->getAttribute( 'width' ) && $height = $image->getAttribute( 'height' ) )
-				$size = array( $width, $height );
+			$width  = $image->getAttribute( 'width' );
+			$height = $image->getAttribute( 'height' );
+			
+			if ( $width && $height )
+				$size = array( intval( $width ), intval( $height ) );
 			else
 				$size = 'full';
+
+			// If WPThumb is active, crop the image to the correct dimensions.
+			if ( class_exists( 'WP_Thumb' ) )
+				$size['crop'] = true;
 
 			$new_src = wp_get_attachment_image_src( $new_attachment, $size );
 
 			if ( isset( $new_src[0] ) ) {
 
 				$image->setAttribute ( 'src' , $new_src[0] );
+				$image->setAttribute ( 'width' , $new_src[1] );
+				$image->setAttribute ( 'height' , $new_src[2] );
 				$update_post = true;
 			
 			}
