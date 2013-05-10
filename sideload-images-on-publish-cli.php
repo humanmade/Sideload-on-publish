@@ -39,11 +39,7 @@ class SideLoad_Images_On_Publish_CLI extends WP_CLI_Command {
 				$offset
 			);
 
-			WP_CLI::line( $query );		
-			
 			$results = $wpdb->get_results( $query );
-
-			WP_CLI::line( 'Found ' . count( $results ) . ' results' );		
 
 			if ( empty( $results ) ) {
 				WP_CLI::line( "No more posts" );
