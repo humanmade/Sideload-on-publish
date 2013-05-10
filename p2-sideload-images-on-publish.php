@@ -12,7 +12,14 @@ $sideload_iamges = new P2_Sideload_Images();
 
 class P2_Sideload_Images {
 
-	public $domain_whitelist = array();
+	public $domain_whitelist = array(
+		'https://dl.dropboxusercontent.com', // DropBox
+		'http://cl.ly/image/463Y120M3O1R',   // CloudApp
+		'http://www.evernote.com',           // Evernote / Skitch
+		'https://www.evernote.com',          // Evernote / Skitch
+		'https://skydrive.live.com',         // Skydrive
+		'http://sdrv.ms',                    // Skydrive
+	);
 	
 	function __construct() {
 
@@ -21,6 +28,17 @@ class P2_Sideload_Images {
 		add_filter( 'wp_insert_comment', array( $this, 'check_comment_content' ), 100 );
 		add_filter( 'edit_comment', array( $this, 'check_comment_content' ), 100 );
 
+	}
+
+	/**
+	 * Method for getting domain whitelist.
+	 *
+	 * Always use this rather than accessing the property directly.
+	 * 
+	 * @return array $domain_whitelist.
+	 */
+	public function get_whitelist() {
+		return apply_filters( 'p2_sideload_images', $this->domain_whitelist );
 	}
 
 	/**
