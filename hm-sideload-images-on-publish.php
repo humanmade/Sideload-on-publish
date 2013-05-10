@@ -160,7 +160,7 @@ class HM_Sideload_Images {
 				$size = 'full';
 
 			// If WPThumb is active, crop the image to the correct dimensions.
-			if ( class_exists( 'WP_Thumb' ) )
+			if ( class_exists( 'WP_Thumb' ) && is_array( $size ) )
 				$size['crop'] = true;
 
 			$new_src = wp_get_attachment_image_src( $new_attachment, $size );
