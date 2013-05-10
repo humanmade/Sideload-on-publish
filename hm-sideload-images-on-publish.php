@@ -8,9 +8,9 @@
  * Version: 0.1
  */
 
-$sideload_iamges = new P2_Sideload_Images();
+$sideload_iamges = new HM_Sideload_Images();
 
-class P2_Sideload_Images {
+class HM_Sideload_Images {
 
 	public $domain_whitelist = array(
 		'https://dl.dropboxusercontent.com', // DropBox
@@ -38,7 +38,7 @@ class P2_Sideload_Images {
 	 * @return array $domain_whitelist.
 	 */
 	public function get_whitelist() {
-		return apply_filters( 'p2_sideload_images', $this->domain_whitelist );
+		return apply_filters( 'hm_sideload_images', $this->domain_whitelist );
 	}
 
 	/**
