@@ -13,7 +13,7 @@ class SideLoad_Images_On_Publish_CLI extends WP_CLI_Command {
 	 function all_in_posts( $args, $assoc_args ) {
 		
 	 	$args = wp_parse_args( $assoc_args, array(
-	 		'post_id' => null,
+	 		'post__in' => null,
 	 		'post_status' => 'publish',
 	 		'post_type' => 'post,page'
 	 	) );
@@ -102,14 +102,14 @@ class SideLoad_Images_On_Publish_CLI extends WP_CLI_Command {
 		
 		$sql_where = array();
 		
-		if ( ! empty( $args['post_id'] ) ) {
-			$sql_where['post_id'] = '( ';
-			foreach ( explode( ',', $args['post_id'] ) as $key => $post_id )
+		if ( ! empty( $args['post__in'] ) ) {
+			$sql_where['post__in'] = '( ';
+			foreach ( explode( ',', $args['post__in'] ) as $key => $post_id )
 				if ( 0 === $key )
-					$sql_where['post_id'] .= $wpdb->prepare( 'id=%s ', $post_id );
+					$sql_where['post__in'] .= $wpdb->prepare( 'id=%s ', $post_id );
 				else
-					$sql_where['post_id'] .= $wpdb->prepare( 'OR id=%s ', $post_id );
-			$sql_where['post_id'] .= ') ';
+					$sql_where['post__in'] .= $wpdb->prepare( 'OR id=%s ', $post_id );
+			$sql_where['post__in'] .= ') ';
  		}
 
  		if ( ! empty( $args['post_type'] ) ) {
