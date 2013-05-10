@@ -1,6 +1,6 @@
 <?php
 
-/* Plugin Name: Sideload Images on publish
+/* Plugin Name: Sideload Images On publish
  * Description: Sideloads external images from whitelist on publish
  * Author: Mattheu
  * Author URI: http://matth.eu
