@@ -21,6 +21,14 @@ Current Whitelist
 * 'https://skydrive.live.com',         // Skydrive
 * 'http://sdrv.ms',                    // Skydrive
 
+WP-CLI Commands
+
+To sideload images on existing posts & comments, you can use the provided WP CLI commands.
+
+[Find out more about WP-CLI](http://wp-cli.org/)
+
+sideload-images all-in-posts [--post__in=<comma separated post IDs>] [--post_type=<comma separated post types>] [--post_statuses=<comma separated post status>]
+
 == Installation ==
 
 Extract the zip file and just drop the contents in the wp-content/plugins/ directory of your WordPress installation and then activate the Plugin from Plugins page.  
