@@ -1,12 +1,15 @@
 <?php
 
-/* Plugin Name: P2 Sideload Images on publish
+/* Plugin Name: Sideload Images on publish
  * Description: Sideloads external images from whitelist on publish
  * Author: Mattheu
  * Author URI: http://matth.eu
  * Contributors: 
  * Version: 0.1
  */
+
+if ( defined('WP_CLI') && WP_CLI )
+	require __DIR__ . '/sideload-images-on-publish-cli.php';
 
 $sideload_iamges = new HM_Sideload_Images();
 
