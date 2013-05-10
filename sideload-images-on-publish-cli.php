@@ -1,6 +1,6 @@
 <?php
 
-WP_CLI::add_command( 'sideload_images', 'SideLoad_Images_On_Publish_CLI' );
+WP_CLI::add_command( 'sideload-images', 'SideLoad_Images_On_Publish_CLI' );
 
 class SideLoad_Images_On_Publish_CLI extends WP_CLI_Command {
 
