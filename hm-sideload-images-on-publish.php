@@ -102,11 +102,12 @@ class HM_Sideload_Images {
 	 */
 	public function check_content_for_img_markdown ( $content, $post_id = null ) {	
 
-		preg_match( '/!\[.*\]\((.*)\)/', $content, $matches );
+		preg_match_all( '/!\[.*\]\((.*)\)/', $content, $matches );
 
-		unset( $matches[0] );
-		
-		foreach ( (array) $matches as $src ) {
+		if ( empty( $matches[1] ) )
+			return $content;
+
+		foreach ( (array) $matches[1] as $src ) {
 
 			$new_attachment = $this->sideload_image( $src, $post_id );
 
