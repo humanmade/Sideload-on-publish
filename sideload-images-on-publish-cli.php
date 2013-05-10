@@ -8,7 +8,7 @@ class SideLoad_Images_On_Publish_CLI extends WP_CLI_Command {
 	 * Sideload all external images from all posts (of all post types)
 	 *
 	 * @subcommand all-in-posts
-	 * @synopsis [--post_type=<comma separated post IDs>] [--post_type=<comma separated post types>] [--post_statuses=<comma separated post status>]
+	 * @synopsis [--post__in=<comma separated post IDs>] [--post_type=<comma separated post types>] [--post_statuses=<comma separated post status>]
 	 */
 	 function all_in_posts( $args, $assoc_args ) {
 		
