@@ -12,7 +12,7 @@
  */
 
 $GLOBALS['wp_tests_options'] = array(
-	'active_plugins' => array( 'p2-sideload-images-on-publish/sideload-images-on-publish.php' ),
+	'active_plugins' => array( basename( dirname( __DIR__ ) ) . '/sideload-images-on-publish.php' ),
 );
 
 require dirname( __FILE__ ) . '/lib/bootstrap.php';
