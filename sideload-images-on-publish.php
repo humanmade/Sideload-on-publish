@@ -189,12 +189,12 @@ class HM_Sideload_Images {
 
 		// This seems a mega hacky way of oututting the body innerHTML
     	$children = $dom->getElementsByTagName('body')->item(0)->childNodes; 
-    	foreach ( $children as $child ) { 
-        	$tmp_dom = new DOMDocument(); 
-        	$tmp_dom->appendChild($tmp_dom->importNode($child, true)); 
-        	$new_content .= trim( $tmp_dom->saveHTML() ); 
-    	} 
-		
+
+    	foreach ( $children as $node )
+    		$new_content .= $dom->saveXML($node) . "\n";
+
+    	$new_content = trim( $new_content );
+    	
 		return $new_content;
 
 	}
