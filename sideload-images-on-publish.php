@@ -107,7 +107,7 @@ class HM_Sideload_Images {
 	 */
 	public function check_content_for_img_markdown ( $content, $post_id = null ) {	
 
-		preg_match_all( '/!\[.*\]\((.*)\)/', $content, $matches );
+		preg_match_all( '/!\[.*?\]\((\S*?)\)/', $content, $matches );
 
 		if ( empty( $matches[1] ) )
 			return $content;
