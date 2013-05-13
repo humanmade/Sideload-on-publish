@@ -1,11 +1,11 @@
 <?php
 
-class Sideload_Images_Markdown_Multiple_UnitTestCase extends Sideload_Images_UnitTestCase {
+class Sideload_Images_HTML_Multiple_UnitTestCase extends Sideload_Images_UnitTestCase {
 
 	private $post_id;
 	
 	function tearDown() {
-	
+		
 		$posts = get_posts( 'numberposts=-1&post_type=attachment&post_status=inherit' );
 
 		foreach ( $posts as $post )
@@ -15,10 +15,10 @@ class Sideload_Images_Markdown_Multiple_UnitTestCase extends Sideload_Images_Uni
 		
 	}
 
-	function testMarkdownMultiple() {
+	function testHTMLMultiple() {
 		
-		$content  = '![](' . $this->test_image_1 . ') ';
-		$content .= '![](' . $this->test_image_2 . ') ';
+		$content  = '<img src="' . $this->test_image_1 . '" alt="Test Image" />';
+		$content .= '<img src="' . $this->test_image_2 . '" width="100" height="50" />';
 
 		$this->post_id = wp_insert_post( array( 'post_content' => $content, 'post_status' => 'publish' ) );
 
@@ -27,8 +27,8 @@ class Sideload_Images_Markdown_Multiple_UnitTestCase extends Sideload_Images_Uni
 		$post = get_post( $this->post_id );
 		
 		$expected = array( 
-			'![](' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_1 ) . ')',
-			'![](' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_2 ) . ')',
+			'<img src="' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_1 ) . '" alt="Test Image" width="100" height="100"/>',
+			'<img src="' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_2 ) . '" width="100" height="50"/>',
 		);
 
 		foreach( $expected as $expected_image )
