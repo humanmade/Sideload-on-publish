@@ -1,6 +1,6 @@
 <?php
 
-class Sideload_Images_Mixed_UnitTestCase extends Sideload_Images_UnitTestCase {
+class Sideload_Images_Markdown_Multiple_UnitTestCase extends Sideload_Images_UnitTestCase {
 
 	private $post_id;
 	
@@ -15,9 +15,13 @@ class Sideload_Images_Mixed_UnitTestCase extends Sideload_Images_UnitTestCase {
 		
 	}
 
-	function testMixed() {
+	function testMarkdownMultiple() {
 		
-		$content = '![Test Image](' . $this->test_image_1 . ') <img src="' . $this->test_image_2 . '" alt="Test Image" />';
+		$content  = '![](' . $this->test_image_1 . ') ';
+		$content .= '![](' . $this->test_image_2 . ') ';
+
+		$this->assertEquals( true, false, $content );
+
 		$this->post_id = wp_insert_post( array( 'post_content' => $content, 'post_status' => 'publish' ) );
 
 		$uploads_dir = wp_upload_dir();
@@ -26,7 +30,7 @@ class Sideload_Images_Mixed_UnitTestCase extends Sideload_Images_UnitTestCase {
 		
 		$expected = array( 
 			'![Test Image](' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_1 ) . ')',
-			'<img src="' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_2 ) . '" alt="Test Image" width="100" height="50"/>'
+			'![Test Image](' . trailingslashit( $uploads_dir['url'] ) . basename( $this->test_image_2 ) . ')',
 		);
 
 		foreach( $expected as $expected_image )

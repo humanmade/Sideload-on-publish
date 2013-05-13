@@ -11,7 +11,7 @@ class Sideload_Images_Markdown_UnitTestCase extends Sideload_Images_UnitTestCase
 		foreach ( $posts as $post )
 			wp_delete_attachment( $post->ID, true );
 
-		wp_delete_post( $post->post_id, true );
+		wp_delete_post( $this->post_id, true );
 		
 	}
 

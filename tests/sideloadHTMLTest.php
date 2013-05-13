@@ -11,12 +11,12 @@ class Sideload_Images_HTML_UnitTestCase extends Sideload_Images_UnitTestCase {
 		foreach ( $posts as $post )
 			wp_delete_attachment( $post->ID, true );
 
-		wp_delete_post( $post->post_id, true );
+		wp_delete_post( $this->post_id, true );
 		
 	}
 
 	function testHTML() {
-		
+			
 		$this->post_id = wp_insert_post( array( 
 			'post_content' => '<img src="' . $this->test_image_1 . '" alt="Test Image"/>',
 			'post_status' => 'publish' 
