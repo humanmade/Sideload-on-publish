@@ -112,7 +112,7 @@ class HM_Sideload_Images {
 		if ( empty( $matches[1] ) )
 			return $content;
 
-		foreach ( (array) $matches[1] as $src ) {
+		foreach ( (array) $matches[1] as $i => $src ) {
 
 			$new_attachment = $this->sideload_image( $src, $post_id );
 
@@ -121,9 +121,10 @@ class HM_Sideload_Images {
 
 			if ( ! $new_src = wp_get_attachment_image_src( $new_attachment, 'full' ) )
 				continue;
-
-			$content = str_replace( $src, $new_src[0], $content );
-
+			
+			$markdown = str_replace( $src, $new_src[0], $matches[0][$i] );
+			$content = str_replace( $matches[0][$i], $markdown, $content );
+			
 		}
 
 		return $content;
