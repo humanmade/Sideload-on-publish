@@ -143,7 +143,7 @@ class HM_Sideload_Images {
 		// loadXml needs properly formatted documents, so it's better to use loadHtml, but it needs a hack to properly handle UTF-8 encoding
 		@$dom->loadHTML( sprintf( 
 			'<html><head><meta http-equiv="Content-Type" content="text/html; charset="UTF-8" /></head><body>%s</body></html>',
-			wpautop( $content )
+			$content
 		) );
 
 		$update = false;
