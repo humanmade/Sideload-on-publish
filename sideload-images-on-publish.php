@@ -22,6 +22,8 @@ class HM_Sideload_Images {
 		'https://www.evernote.com',          // Evernote / Skitch
 		'https://skydrive.live.com',         // Skydrive
 		'http://sdrv.ms',                    // Skydrive
+		'http://i.imgur.com',                // Imgur
+		'https://raw.github.com/'
 	);
 	
 	function __construct() {
