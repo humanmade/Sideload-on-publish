@@ -17,7 +17,6 @@ $GLOBALS['wp_tests_options'] = array(
 
 require dirname( __FILE__ ) . '/lib/bootstrap.php';
 
-class Sideload_Images_UnitTestCase extends WP_UnitTestCase {
 /**
  * Filter whitelist to make sure github is valid.
  * @param  array $whitelist
@@ -30,8 +29,7 @@ function sideload_images_test_whitelist ($whitelist) {
 }
 add_filter( 'hm_sideload_images', 'sideload_images_test_whitelist' );
 
-	/** A referene to the actual plugin that we're testing. */
-	private $plugin;
+class Sideload_Images_UnitTestCase extends WP_UnitTestCase {
 	
 	function setUp() {
 		
@@ -40,10 +38,7 @@ add_filter( 'hm_sideload_images', 'sideload_images_test_whitelist' );
 		$this->test_image_1 = 'https://raw.github.com/humanmade/Sideload-on-publish/unit-tests/tests/images/test-1.png';
 		$this->test_image_2 = 'https://raw.github.com/humanmade/Sideload-on-publish/unit-tests/tests/images/test-2.png';
 
-		add_filter( 'hm_sideload_images', function( $whitelist ) {
-			return array_merge( $whitelist, array( 'https://raw.github.com/' ) );
-		} );
-
 	} // end setup
 
 }
+
