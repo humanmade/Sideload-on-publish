@@ -26,8 +26,8 @@ class Sideload_Images_UnitTestCase extends WP_UnitTestCase {
 		
 		parent::setUp();
 		
-		$this->test_image_1 = 'https://raw.github.com/humanmade/WPThumb/master/tests/images/black.png';
-		$this->test_image_2 = 'https://raw.github.com/humanmade/WPThumb/master/tests/images/google.gif';
+		$this->test_image_1 = 'https://raw.github.com/humanmade/WPThumb/unit-tests/tests/images/test-1.png';
+		$this->test_image_2 = 'https://raw.github.com/humanmade/WPThumb/unit-tests/tests/images/test-2.png';
 
 		add_filter( 'hm_sideload_images', function( $whitelist ) {
 			return array_merge( $whitelist, array( 'https://raw.github.com/' ) );
