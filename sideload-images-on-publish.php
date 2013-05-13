@@ -11,7 +11,7 @@
 if ( defined('WP_CLI') && WP_CLI )
 	require __DIR__ . '/sideload-images-on-publish-cli.php';
 
-$sideload_iamges = new HM_Sideload_Images();
+$sideload_images = new HM_Sideload_Images();
 
 class HM_Sideload_Images {
 
@@ -112,8 +112,9 @@ class HM_Sideload_Images {
 		if ( empty( $matches[1] ) )
 			return $content;
 
-		foreach ( (array) $matches[1] as $i => $src ) {
+		for ( $i = 0; $i < count( $matches[0] ); $i++ ) {
 
+			$src = $matches[1][$i];
 			$new_attachment = $this->sideload_image( $src, $post_id );
 
 			if ( 0 === strpos( $src, home_url() ) || ! $this->check_domain_whitelist( $src ) )
