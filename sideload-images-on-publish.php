@@ -30,8 +30,8 @@ class HM_Sideload_Images {
 
 		add_action( 'save_post', array( $this, 'check_post_content' ), 100 );
 
-		add_filter( 'wp_insert_comment', array( $this, 'check_comment_content' ), 100 );
-		add_filter( 'edit_comment', array( $this, 'check_comment_content' ), 100 );
+		add_action( 'wp_insert_comment', array( $this, 'check_comment_content' ), 100 );
+		add_action( 'edit_comment', array( $this, 'check_comment_content' ), 100 );
 
 	}
 
