@@ -93,8 +93,8 @@ class HM_Sideload_Images {
 		$new_content = $this->check_content_for_img_html( $new_content, $comment->comment_post_ID );
 	
 		if ( $new_content !== $comment->comment_content ) {
-			$wpdb->update( $wpdb->comments, array( 'comment_content' => $new_content ), array( 'ID' => $comment->comment_ID ) );
-			clean_comment_cache( $comment->ID );
+			$wpdb->update( $wpdb->comments, array( 'comment_content' => $new_content ), array( 'comment_ID' => $comment->comment_ID ) );
+			clean_comment_cache( $comment->comment_ID );
 		}
 
 	}
