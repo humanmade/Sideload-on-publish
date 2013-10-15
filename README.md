@@ -25,15 +25,8 @@ To sideload images on existing posts & comments, you can use the provided WP CLI
 sideload-images all-in-posts [--post__in=<comma separated post IDs>] [--post_type=<comma separated post types>] [--post_statuses=<comma separated post status>]
 
 
-## primary-contact 
+## Contribution guidelines ##
 
-Matthew Haynes-Young
+see https://github.com/humanmade/Sideload-on-publish/blob/master/contributing.md
 
-@mattheu
-
-## secondary-contact 
-
--
-
--
 
