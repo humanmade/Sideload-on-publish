@@ -1,3 +1,5 @@
+_**This project is unmaintained.**_
+
 Sideload Images on Publish
 ==========================
 
